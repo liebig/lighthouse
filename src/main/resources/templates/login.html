@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=1,initial-scale=1,user-scalable=1" />
+	<title>Lighthouse</title>
+	
+	<link rel="stylesheet" type="text/css" th:href="@{/bootstrap/css/bootstrap.min.css}" />
+    <link th:href="@{/bootstrap/css/animate.min.css}" rel="stylesheet" />
+	<link rel="stylesheet" type="text/css" th:href="@{/css/login-styles.css}" />
+	
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script th:src="@{/bootstrap/js/html5shiv.min.js}"></script>
+      <script th:src="@{/bootstrap/js/respond.min.js}"></script>
+    <![endif]-->
+</head>
+<body>
+	
+	<div class="container">
+        <div class="card card-container">
+            <img id="profile-img" class="profile-img-card" th:src="@{/img/icon-128.png}" />
+            <p id="profile-name" class="profile-name-card"></p>
+            <form class="form-signin" th:action="@{/login}" method="post">
+                <span id="reauth-email" class="reauth-email"></span>
+                <input type="text" id="username" name="username" class="form-control" placeholder="Name" required="required" autofocus="autofocus" />
+                <input type="password" id="password" name="password" class="form-control" placeholder="Password" required="required" />
+                <button class="btn btn-lg btn-primary btn-block btn-signin" type="submit">Sign in</button>
+            </form><!-- /form -->
+        </div><!-- /card-container -->
+    </div><!-- /container -->
+	
+	<script th:src="@{/bootstrap/js/jquery-2.2.4.min.js}"></script>
+	<script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+	<script th:src="@{/bootstrap/js/bootstrap-notify.min.js}"></script>
+	<script th:src="@{/bootstrap/js/toast.js}"></script>
+	
+	<script th:if="${param.logout}">
+		toast("You have been logged out.", "success");
+	</script>
+
+	<script th:if="${param.error}">
+		toast("Invalid username or password.", "danger");
+	</script>
+	
+</body>
+</html>
