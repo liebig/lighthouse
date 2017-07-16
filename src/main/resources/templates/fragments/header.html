@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+  <head th:fragment="head">
+ 	<meta charset="utf-8" />
+	<link rel="apple-touch-icon" sizes="76x76" th:href="@{/img/icon-76.png}" />
+	<link rel="icon" type="image/png" sizes="96x96"
+		th:href="@{/img/icon-96.png}" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	
+	<title>Lighthouse</title>
+	
+	<meta
+		content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'
+		name='viewport' />
+	<meta name="viewport" content="width=device-width" />
+	
+	<!-- Bootstrap core CSS     -->
+	<link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet" />
+	
+	<!-- Animation library for notifications   -->
+	<link th:href="@{/bootstrap/css/animate.min.css}" rel="stylesheet" />
+	
+	<!--  Paper Dashboard core CSS    -->
+	<link th:href="@{/css/paper-dashboard.css}" rel="stylesheet" />
+	
+	<!--  Fonts and icons -->
+	<link th:href="@{/bootstrap/css/fonts.multi.css}" rel='stylesheet' type='text/css' />
+	<link th:href="@{/bootstrap/css/themify-icons.css}" rel="stylesheet" />
+  </head>
+  <body>
+    <nav class="navbar navbar-default" th:fragment="navbar">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a th:href="@{/}">
+					<h3>
+						<img th:src="@{/img/icon-96.png}" /> Lighthouse
+					</h3>
+				</a>
+			</div>
+			<div sec:authorize="isAuthenticated()">
+				<ul class="nav navbar-nav navbar-right">
+					<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+						<i class="ti-user"></i> 
+						<b><p sec:authentication="name">User</p></b>
+					</a>
+						<ul class="dropdown-menu">
+							<h5>Roles</h5>
+							<li th:each="authority : ${#authentication.getAuthorities()}"
+								th:text="${authority.getAuthority()}"></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+</body>
+</html>
