@@ -7,7 +7,7 @@
 	<link rel="icon" type="image/png" sizes="96x96"
 		th:href="@{/img/icon-96.png}" />
 		
-	<title>Lighthouse</title>
+	<title th:text="#{lighthouse}">Lighthouse</title>
 	
 	<link rel="stylesheet" type="text/css" th:href="@{/bootstrap/css/bootstrap.min.css}" />
     <link th:href="@{/bootstrap/css/animate.min.css}" rel="stylesheet" />
@@ -27,24 +27,21 @@
             <p id="profile-name" class="profile-name-card"></p>
             <form class="form-signin" th:action="@{/login}" method="post">
                 <span id="reauth-email" class="reauth-email"></span>
-                <input type="text" id="username" name="username" class="form-control" placeholder="Name" required="required" autofocus="autofocus" />
-                <input type="password" id="password" name="password" class="form-control" placeholder="Password" required="required" />
-                <button class="btn btn-lg btn-primary btn-block btn-signin" type="submit">Sign in</button>
+                <input th:placeholder="#{login.username}" type="text" id="username" name="username" class="form-control" required="required" autofocus="true" />
+                <input th:placeholder="#{login.password}" type="password" id="password" name="password" class="form-control" required="required" />
+                <button th:text="#{login.signin}" class="btn btn-lg btn-primary btn-block btn-signin" type="submit">Sign in</button>
             </form><!-- /form -->
         </div><!-- /card-container -->
     </div><!-- /container -->
 	
-	<script th:src="@{/bootstrap/js/jquery-2.2.4.min.js}"></script>
-	<script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
-	<script th:src="@{/bootstrap/js/bootstrap-notify.min.js}"></script>
-	<script th:src="@{/bootstrap/js/toast.js}"></script>
+	<div th:replace="fragments/footer :: bootstrap"></div>
 	
-	<script th:if="${param.logout}">
-		toast("You have been logged out.", "success");
+	<script th:inline="javascript" th:if="${param.logout}">
+		toast(/*[[#{login.logout}]]*/ "You have been logged out.", "success");
 	</script>
 
-	<script th:if="${param.error}">
-		toast("Invalid username or password.", "danger");
+	<script th:inline="javascript" th:if="${param.error}">
+		toast(/*[[#{login.invalid}]]*/ "Invalid username or password.", "danger");
 	</script>
 	
 </body>
