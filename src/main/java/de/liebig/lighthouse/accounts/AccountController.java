@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,7 +27,7 @@ public class AccountController {
 	@Autowired
     ApiManager apiManager;
 	
-	@RequestMapping(value = "/", name = "get",  method = RequestMethod.GET)
+	@RequestMapping(name = "get",  method = RequestMethod.GET)
 	public com.myjeeva.digitalocean.pojo.Account getAccount() throws DigitalOceanException, RequestUnsuccessfulException {
 		
 		Optional<DigitalOcean> digitalOcean = apiManager.getDigitalOcean();
@@ -37,13 +38,13 @@ public class AccountController {
 		}
 	}
 	
-	@RequestMapping(value = "/", name = "create",  method = RequestMethod.POST)
-	public Account createAccount(@RequestParam("apikey") String apiKey) {
+	@RequestMapping(name = "create",  method = RequestMethod.POST)
+	public Account createAccount(@RequestBody AccountDto accountDto) {
 		
-		if(apiManager.isDigitalOceanApiKeyValid(apiKey)) {
-			Optional<Account> createdAccount = accountService.createAccount(apiKey);
+		if(apiManager.isDigitalOceanApiKeyValid(accountDto.getApiKey())) {
+			Optional<Account> createdAccount = accountService.createAccount(accountDto.getApiKey());
 			if(createdAccount.isPresent()) {
-				apiManager.setDigitalOceanApiKey(apiKey);
+				apiManager.setDigitalOceanApiKey(accountDto.getApiKey());
 				return createdAccount.get();
 			}
 		}

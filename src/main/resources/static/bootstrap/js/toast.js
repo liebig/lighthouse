@@ -13,7 +13,7 @@ function toast(message, type) {
 		},
 		offset: 0,
 		spacing: 10,
-		z_index: 1031,
+		z_index: 1051,
 		delay: 5000,
 		timer: 1000,
 		mouse_over: null,

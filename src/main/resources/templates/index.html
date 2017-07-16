@@ -1,187 +1,98 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
-	
-<head  th:replace="fragments/header :: head">
+
+<head th:replace="fragments/header :: head">
 </head>
 <body>
 
-	<div id="app" class="wrapper">
+	<div id="app">
+		<div class="wrapper">
 
-		<div class="main-panel">
+			<div class="main-panel">
 
-			<div th:replace="fragments/header :: navbar"></div>
+				<div th:replace="fragments/header :: navbar"></div>
 
-			<div class="content">
-				<div class="container-fluid">
-					<div class="row">
-						<div class="col-lg-3 col-sm-6">
-							<div class="card">
-								<div class="content">
-									<div class="row">
-										<div class="col-xs-5">
-											<div class="icon-big icon-warning text-center">
-												<i class="ti-server"></i>
+				<div class="content">
+				
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col-lg-3 col-sm-6">
+								<div class="card">
+									<div class="content">
+										<div class="row">
+											<div class="col-xs-5">
+												<div class="icon-big icon-warning text-center">
+													<i class="ti-plug"></i>
+												</div>
 											</div>
-										</div>
-										<div class="col-xs-7">
-											<div class="numbers">
-												<p>Capacity</p>
-												105GB
+											<div class="col-xs-7">
+												<div class="numbers">
+													Rate Limit
+													<p>Limit: {{ account.rateLimit.limit }}</p>
+													<p>Remaining: {{ account.rateLimit.remaining }}</p>
+												</div>
 											</div>
-										</div>
-									</div>
-									<div class="footer">
-										<hr />
-										<div class="stats">
-											<i class="ti-reload"></i> Updated now
 										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-						<div class="col-lg-3 col-sm-6">
-							<div class="card">
-								<div class="content">
-									<div class="row">
-										<div class="col-xs-5">
-											<div class="icon-big icon-success text-center">
-												<i class="ti-wallet"></i>
+							<div class="col-lg-3 col-sm-6">
+								<div class="card">
+									<div class="content">
+										<div class="row">
+											<div class="col-xs-5">
+												<div class="icon-big icon-success text-center">
+													<i class="ti-server"></i>
+												</div>
 											</div>
-										</div>
-										<div class="col-xs-7">
-											<div class="numbers">
-												<p>Revenue</p>
-												$1,345
+											<div class="col-xs-7">
+												<div class="numbers">
+													Server limit
+													<p>Droplets: {{ account.dropletLimit }}</p>
+													<p>Floating IPs: {{ account.floatingIPLimit }}</p>
+												</div>
 											</div>
-										</div>
-									</div>
-									<div class="footer">
-										<hr />
-										<div class="stats">
-											<i class="ti-calendar"></i> Last day
 										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-						<div class="col-lg-3 col-sm-6">
-							<div class="card">
-								<div class="content">
-									<div class="row">
-										<div class="col-xs-5">
-											<div class="icon-big icon-danger text-center">
-												<i class="ti-pulse"></i>
+							<div class="col-lg-3 col-sm-6">
+								<div class="card">
+									<div class="content">
+										<div class="row">
+											<div class="col-xs-5">
+												<div class="icon-big icon-danger text-center">
+													<i class="ti-email"></i>
+												</div>
 											</div>
-										</div>
-										<div class="col-xs-7">
-											<div class="numbers">
-												<p>Errors</p>
-												23
+											<div class="col-xs-7">
+												<div class="numbers">
+													E-Mail
+													<p>{{ account.email }}</p>
+													<p>Verified: {{ account.emailVerified }}</p>
+												</div>
 											</div>
-										</div>
-									</div>
-									<div class="footer">
-										<hr />
-										<div class="stats">
-											<i class="ti-timer"></i> In the last hour
 										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-						<div class="col-lg-3 col-sm-6">
-							<div class="card">
-								<div class="content">
-									<div class="row">
-										<div class="col-xs-5">
-											<div class="icon-big icon-info text-center">
-												<i class="ti-twitter-alt"></i>
+							<div class="col-lg-3 col-sm-6">
+								<div class="card">
+									<div class="content">
+										<div class="row">
+											<div class="col-xs-5">
+												<div class="icon-big icon-info text-center">
+													<i class="ti-user"></i>
+												</div>
 											</div>
-										</div>
-										<div class="col-xs-7">
-											<div class="numbers">
-												<p>Followers</p>
-												+45
+											<div class="col-xs-7">
+												<div class="numbers">
+													Account
+													<p>Status: {{ account.status }}</p>
+													<p>&nbsp;</p>
+												</div>
 											</div>
-										</div>
-									</div>
-									<div class="footer">
-										<hr />
-										<div class="stats">
-											<i class="ti-reload"></i> Updated now
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-
-						<div class="col-md-12">
-							<div class="card">
-								<div class="header">
-									<h4 class="title">Users Behavior</h4>
-									<p class="category">24 Hours performance</p>
-								</div>
-								<div class="content">
-									<div id="chartHours" class="ct-chart"></div>
-									<div class="footer">
-										<div class="chart-legend">
-											<i class="fa fa-circle text-info"></i> Open <i
-												class="fa fa-circle text-danger"></i> Click <i
-												class="fa fa-circle text-warning"></i> Click Second Time
-										</div>
-										<hr />
-										<div class="stats">
-											<i class="ti-reload"></i> Updated 3 minutes ago
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-6">
-							<div class="card">
-								<div class="header">
-									<h4 class="title">Email Statistics</h4>
-									<p class="category">Last Campaign Performance</p>
-								</div>
-								<div class="content">
-									<div id="chartPreferences" class="ct-chart ct-perfect-fourth"></div>
-
-									<div class="footer">
-										<div class="chart-legend">
-											<i class="fa fa-circle text-info"></i> Open <i
-												class="fa fa-circle text-danger"></i> Bounce <i
-												class="fa fa-circle text-warning"></i> Unsubscribe
-										</div>
-										<hr />
-										<div class="stats">
-											<i class="ti-timer"></i> Campaign sent 2 days ago
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="card ">
-								<div class="header">
-									<h4 class="title">2015 Sales</h4>
-									<p class="category">All products including Taxes</p>
-								</div>
-								<div class="content">
-									<div id="chartActivity" class="ct-chart"></div>
-
-									<div class="footer">
-										<div class="chart-legend">
-											<i class="fa fa-circle text-info"></i> Tesla Model S <i
-												class="fa fa-circle text-warning"></i> BMW 5 Series
-										</div>
-										<hr />
-										<div class="stats">
-											<i class="ti-check"></i> Data information certified
 										</div>
 									</div>
 								</div>
@@ -189,55 +100,115 @@
 						</div>
 					</div>
 				</div>
+
+				<footer class="footer" th:replace="fragments/footer :: footer"></footer>
+
 			</div>
-
-			<footer class="footer" th:replace="fragments/footer :: footer"></footer>
-
 		</div>
-	</div>
 
 
-	<!-- Modal -->
-	<div class="modal fade" id="registerDoKey" tabindex="-1" role="dialog"
-		aria-labelledby="myModalLabel">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title" id="myModalLabel">Register Digital
-						Ocean API Key</h4>
-				</div>
-				<div class="modal-body">...</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-primary">Save changes</button>
+		<!-- Modal -->
+		<div class="modal fade" id="registerDoKey" tabindex="-1" role="dialog"
+			aria-labelledby="myModalLabel">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title" id="myModalLabel">Register Digital
+							Ocean API Key</h4>
+					</div>
+					<form v-on:submit.prevent="registerApiKey">
+						<div class="modal-body">
+							<input type="text" id="apikey" name="apikey" class="form-control"
+								placeholder="API Key" required="required" autofocus="autofocus" />
+						</div>
+						<div class="modal-footer">
+							<button type="submit" class="btn btn-primary">Register</button>
+						</div>
+					</form>
 				</div>
 			</div>
 		</div>
 	</div>
-
 </body>
 
 <div th:replace="fragments/footer :: bootstrap"></div>
 <div th:replace="fragments/footer :: vue"></div>
 
 <script>
+	var token = $("meta[name='_csrf']").attr("content"); 
+	var header = $("meta[name='_csrf_header']").attr("content");
+
 	var app = new Vue({
 		el : '#app',
 		mounted : function() {
+			this.$http.get('/account').then(function(response) {
+				if (response.body) {
+					this.account = response.body;
+					this.setInterval();
+				} else {
+					$('#registerDoKey').modal({
+						backdrop : 'static',
+						keyboard : false
+					});
+					$('#registerDoKey').modal('show');
+				}
 
+			}, function(response) {
+				toast("Cannot load account.", "danger");
+			});
 		},
 		data : {
-			message : 'Hello Vue!'
+			account: {
+				"rateLimit": {
+		    		"limit": 0,
+		    		"remaining": 0,
+			    	"reset": 0
+		  		},
+	  			"email": "",
+			  	"uuid": "",
+			  	"dropletLimit": 0,
+			  	"status": "",
+			  	"statusMessage": "",
+			  	"floatingIPLimit": 0,
+			  	"emailVerified": false
+			}
+		},
+		methods : {
+			setInterval : function() {
+				setInterval(function () {
+				      this.loadAccount();
+		   		}.bind(this), 5000); 
+			},
+			loadAccount : function() {
+				this.$http.get('/account').then(function(response) {
+					if (response.body) {
+						this.account = response.body;
+					} else {
+						toast("Cannot load account.", "danger");
+					}
+				}, function(response) {
+					toast("Cannot load account.", "danger");
+				});
+			},
+			
+			registerApiKey : function(event) {
+				
+				this.$http.post('/account', {apiKey: $('#apikey').val()}, { headers: { 'X-CSRF-TOKEN': token}}).then(function (response) {
+
+					if (response.body) {
+						toast("API key successfully saved.", "success");
+						this.setInterval();
+						$('#registerDoKey').modal('hide');
+					} else {
+						toast("Invalid API key - please try again.", "danger");	
+					}
+				  }, function(response) {
+					  toast("Invalid API key - please try again.", "danger");
+				  });
+				
+			}
 		}
 	})
-</script>
-
-
-<script>
-	$('#registerDoKey').modal({
-		backdrop : 'static',
-		keyboard : false
-	});
-	$('#registerDoKey').modal('show')
 </script>
 
 </html>
