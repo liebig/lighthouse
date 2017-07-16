@@ -2,9 +2,9 @@ package de.liebig.lighthouse.roles;
 
 import java.util.Optional;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface RoleRepository extends CrudRepository<Role, Long> {
+public interface RoleRepository extends JpaRepository<Role, Long> {
 
 	Optional<Role> findOneByRoleIgnoreCase(String role);
 	

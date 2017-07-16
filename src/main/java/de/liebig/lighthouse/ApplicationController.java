@@ -1,32 +1,21 @@
 package de.liebig.lighthouse;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 import de.liebig.lighthouse.exceptions.ResourceNotFoundException;
-import de.liebig.lighthouse.roles.Role;
-import de.liebig.lighthouse.roles.RoleService;
-import de.liebig.lighthouse.users.User;
-import de.liebig.lighthouse.users.UserRepository;
 import de.liebig.lighthouse.users.UserService;
 
 @RestController
@@ -34,13 +23,7 @@ import de.liebig.lighthouse.users.UserService;
 public class ApplicationController {
 
 	@Autowired
-	private UserRepository userRepository;
-
-	@Autowired
 	private UserService userService;
-	
-	@Autowired
-	private RoleService roleService;
 	
 	@RequestMapping(value = "/login", name = "login")
 	public ModelAndView login(
@@ -67,8 +50,8 @@ public class ApplicationController {
 		return new ModelAndView("register");
 	}
 	
-	@RequestMapping(value = "/register", method = RequestMethod.POST, name = "doregister")
-	public ModelAndView doRegister(
+	@RequestMapping(value = "/register", method = RequestMethod.POST, name = "create")
+	public ModelAndView create (
 		@RequestParam("username") String username,
 		@RequestParam("password") char[] password,
 		HttpServletResponse response) throws IOException {
@@ -93,11 +76,8 @@ public class ApplicationController {
 	
 	@RequestMapping(value = "/", name = "index")
 	public ModelAndView index(){
-
-		
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("index");
-
 		return mav;
 	}
 	
