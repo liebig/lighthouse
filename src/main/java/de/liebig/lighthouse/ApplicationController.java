@@ -1,4 +1,4 @@
-package de.liebig.lighthouse.controller;
+package de.liebig.lighthouse;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -26,8 +26,8 @@ import de.liebig.lighthouse.users.UserRepository;
 import de.liebig.lighthouse.users.UserService;
 
 @RestController
-@RequestMapping(value = "/", name = "IndexController")
-public class IndexController {
+@RequestMapping(value = "/", name = "ApplicationController")
+public class ApplicationController {
 
 	@Autowired
 	private UserRepository userRepository;
@@ -45,7 +45,7 @@ public class IndexController {
 		HttpServletResponse response) throws IOException {
 
 		if(!userService.exists()) {
-			String registerUrl = MvcUriComponentsBuilder.fromMethodCall(MvcUriComponentsBuilder.on(IndexController.class).register()).build().getPath();
+			String registerUrl = MvcUriComponentsBuilder.fromMethodCall(MvcUriComponentsBuilder.on(ApplicationController.class).register()).build().getPath();
 			response.sendRedirect(registerUrl);
 			return null;
 		} else {
@@ -81,7 +81,7 @@ public class IndexController {
 		} else {
 			userService.createUser(username, password);
 			
-			String indexUrl = MvcUriComponentsBuilder.fromMethodCall(MvcUriComponentsBuilder.on(IndexController.class).index()).build().getPath();
+			String indexUrl = MvcUriComponentsBuilder.fromMethodCall(MvcUriComponentsBuilder.on(ApplicationController.class).index()).build().getPath();
 			response.sendRedirect(indexUrl);
 			return null;
 		}
