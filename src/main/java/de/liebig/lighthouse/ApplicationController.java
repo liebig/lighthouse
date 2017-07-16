@@ -101,7 +101,7 @@ public class ApplicationController {
 		return mav;
 	}
 	
-	@ExceptionHandler({NoHandlerFoundException.class, ResourceNotFoundException.class})
+	@ExceptionHandler(ResourceNotFoundException.class)
 	public ModelAndView notFoundHandler() {
 		ModelAndView mav = new ModelAndView("error/404");
 		mav.setStatus(HttpStatus.NOT_FOUND);
@@ -110,7 +110,7 @@ public class ApplicationController {
 	
 	@ExceptionHandler(Exception.class)
 	public ModelAndView internalServerErrorHandler() {
-		ModelAndView mav = new ModelAndView();
+		ModelAndView mav = new ModelAndView("error/500");
 		mav.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
 		return mav;
 	}
