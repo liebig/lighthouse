@@ -16,6 +16,7 @@ import com.myjeeva.digitalocean.exception.RequestUnsuccessfulException;
 
 
 import de.liebig.lighthouse.api.ApiManager;
+import de.liebig.lighthouse.exceptions.ApiException;
 
 @RestController
 @RequestMapping(value = "/account", name = "AccountController")
@@ -28,14 +29,14 @@ public class AccountController {
     ApiManager apiManager;
 	
 	@RequestMapping(name = "get",  method = RequestMethod.GET)
-	public com.myjeeva.digitalocean.pojo.Account getAccount() throws DigitalOceanException, RequestUnsuccessfulException {
+	public com.myjeeva.digitalocean.pojo.Account getAccount() throws ApiException {
 		
-		Optional<DigitalOcean> digitalOcean = apiManager.getDigitalOcean();
-		if (digitalOcean.isPresent()) {
-			return digitalOcean.get().getAccountInfo();
-		} else {
-			return null;
-		}
+		DigitalOcean digitalOcean = apiManager.getDigitalOcean();
+			try {
+				return digitalOcean.getAccountInfo();
+			} catch (DigitalOceanException | RequestUnsuccessfulException e) {
+				throw new ApiException("Could not load account", e);
+			}
 	}
 	
 	@RequestMapping(name = "create",  method = RequestMethod.POST)

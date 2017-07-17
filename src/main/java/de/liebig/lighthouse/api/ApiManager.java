@@ -4,9 +4,11 @@ import java.util.Optional;
 
 import com.myjeeva.digitalocean.DigitalOcean;
 
+import de.liebig.lighthouse.exceptions.ApiException;
+
 public interface ApiManager {
 	
-	public Optional<DigitalOcean> getDigitalOcean();
+	public DigitalOcean getDigitalOcean() throws ApiException;
 	
 	public Optional<DigitalOcean> setDigitalOceanApiKey(String apiKey);
 	

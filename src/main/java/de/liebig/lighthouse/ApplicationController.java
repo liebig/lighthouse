@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
+import de.liebig.lighthouse.exceptions.ApiException;
+import de.liebig.lighthouse.exceptions.ExceptionDto;
 import de.liebig.lighthouse.exceptions.ResourceNotFoundException;
 import de.liebig.lighthouse.users.UserService;
 
@@ -86,6 +88,12 @@ public class ApplicationController {
 		ModelAndView mav = new ModelAndView("error/404");
 		mav.setStatus(HttpStatus.NOT_FOUND);
 		return mav;
+	}
+	
+	@ExceptionHandler(ApiException.class)
+	public ExceptionDto apiErrorHandler(Exception ex, HttpServletResponse response) {
+		response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+		return new ExceptionDto(ex.getMessage());
 	}
 	
 	@ExceptionHandler(Exception.class)

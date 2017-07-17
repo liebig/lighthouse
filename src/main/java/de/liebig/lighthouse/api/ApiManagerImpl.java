@@ -10,6 +10,7 @@ import com.myjeeva.digitalocean.exception.DigitalOceanException;
 import com.myjeeva.digitalocean.exception.RequestUnsuccessfulException;
 import com.myjeeva.digitalocean.impl.DigitalOceanClient;
 
+import de.liebig.lighthouse.exceptions.ApiException;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
@@ -24,8 +25,12 @@ public class ApiManagerImpl implements ApiManager {
 	}
 	
 	@Override
-	public Optional<DigitalOcean> getDigitalOcean() {
-		return Optional.ofNullable(ApiManagerImpl.digitalOcean);
+	public DigitalOcean getDigitalOcean() throws ApiException {
+		if (ApiManagerImpl.digitalOcean != null) {
+				return ApiManagerImpl.digitalOcean;
+		} else {
+			throw new ApiException("DigitalOcean API is not set");
+		}
 	}
 
 	@Override
