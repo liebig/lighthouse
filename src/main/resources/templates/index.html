@@ -43,7 +43,7 @@
 										<div class="row">
 											<div class="col-xs-5">
 												<div class="icon-big icon-success text-center">
-													<i class="ti-server"></i>
+													<i class="ti-dashboard"></i>
 												</div>
 											</div>
 											<div class="col-xs-7">
@@ -97,6 +97,31 @@
 									</div>
 								</div>
 							</div>
+							<div class="col-lg-3 col-sm-6" v-for="droplet in droplets">
+								<div class="card">
+									<div class="content">
+										<div class="row">
+											<div class="col-xs-5">
+												<div class="icon-big icon-info text-center">
+													<i class="ti-server"></i>
+												</div>
+											</div>
+											<div class="col-xs-7">
+												<div class="numbers">
+													<a v-if="droplet.networks.version4Networks[0]" :href="'http://' + droplet.networks.version4Networks[0].ipAddress" target="_blank">{{ droplet.networks.version4Networks[0].ipAddress }}</a>
+													<p>{{ droplet.name }}</p>
+													<p>Memory: {{ droplet.memorySizeInMb }} MB</p>
+													<p>CPUs: {{ droplet.virutalCpuCount }}</p>
+													<p>SSD: {{ droplet.diskSize }} GB</p>
+													<p>Status: {{ droplet.status }}</p>
+													<hr />
+													<button v-on:click="deleteApp(droplet.id)" type="button" class="btn btn-danger">Delete</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -113,8 +138,7 @@
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h4 class="modal-title" id="myModalLabel">Register Digital
-							Ocean API Key</h4>
+						<h4 class="modal-title">Register Digital Ocean API Key</h4>
 					</div>
 					<form v-on:submit.prevent="registerApiKey">
 						<div class="modal-body">
@@ -128,6 +152,43 @@
 				</div>
 			</div>
 		</div>
+		<!-- /Modal -->
+		
+		<!-- Modal -->
+		<div class="modal fade" id="addApp" tabindex="-1" role="dialog"
+			aria-labelledby="myModalLabel">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">Create App</h4>
+					</div>
+					<form v-on:submit.prevent="addApp">
+						<div class="modal-body">
+							<input type="hidden" id="region" value="fra1" />
+							
+							<select id="size">
+							  <option value="512mb">512 MB / 1 CPU / 20 GB SSD</option>
+							  <option value="1gb">1 GB / 1 CPU / 30 GB SSD</option>
+							  <option value="2gb">2 GB / 2 CPU / 40 GB SSD</option>
+							</select>
+							
+							<select id="softwareEnum">
+							  <option value="APACHE">Apache</option>
+							  <option value="NGINX">nginx</option>
+							</select>
+
+						</div>
+						<div class="modal-footer">
+							<button type="submit" class="btn btn-primary">Create</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!-- /Modal -->
+		
+		
+		
 	</div>
 </body>
 
@@ -137,24 +198,25 @@
 <script>
 	var token = $("meta[name='_csrf']").attr("content"); 
 	var header = $("meta[name='_csrf_header']").attr("content");
+	
+	var csrfHeader = {}
+	csrfHeader[$("meta[name='_csrf_header']").attr("content")] = $("meta[name='_csrf']").attr("content");
 
+	/*<![CDATA[*/
 	var app = new Vue({
 		el : '#app',
 		mounted : function() {
 			this.$http.get('/account').then(function(response) {
 				if (response.body) {
 					this.account = response.body;
-					this.setInterval();
+					this.loadApps();
+					
 				} else {
-					$('#registerDoKey').modal({
-						backdrop : 'static',
-						keyboard : false
-					});
-					$('#registerDoKey').modal('show');
+					toast("Cannot load account.", "danger");
 				}
-
+				this.setInterval();
 			}, function(response) {
-				toast("Cannot load account.", "danger");
+				this.showApiKeyModal();
 			});
 		},
 		data : {
@@ -164,20 +226,38 @@
 		    		"remaining": 0,
 			    	"reset": 0
 		  		},
-	  			"email": "",
-			  	"uuid": "",
+	  			"email": " ",
+			  	"uuid": " ",
 			  	"dropletLimit": 0,
-			  	"status": "",
-			  	"statusMessage": "",
+			  	"status": " ",
+			  	"statusMessage": " ",
 			  	"floatingIPLimit": 0,
 			  	"emailVerified": false
-			}
+			},
+			droplets: []
 		},
 		methods : {
+			showApiKeyModal : function() {
+				$('#registerDoKey').modal({
+					backdrop : 'static',
+					keyboard : false
+				});
+				$('#registerDoKey').modal('show');
+			},
+			showAddAppModal : function() {
+				$('#addApp').modal('show');
+			},
+			hideAddAppModal : function() {
+				$('#addApp').modal('hide');
+			},
 			setInterval : function() {
 				setInterval(function () {
-				      this.loadAccount();
+					this.loadData();      
 		   		}.bind(this), 5000); 
+			},
+			loadData : function() {
+	      		this.loadApps();
+	      		this.loadAccount();
 			},
 			loadAccount : function() {
 				this.$http.get('/account').then(function(response) {
@@ -190,13 +270,24 @@
 					toast("Cannot load account.", "danger");
 				});
 			},
-			
+			loadApps : function() {
+				this.$http.get('/server').then(function(response) {
+					if (response.body && response.body.droplets) {
+						this.droplets = response.body.droplets;
+					} else {
+						toast("Cannot load apps.", "danger");
+					}
+				}, function(response) {
+					toast("Cannot load apps.", "danger");
+				});
+			},
 			registerApiKey : function(event) {
 				
-				this.$http.post('/account', {apiKey: $('#apikey').val()}, { headers: { 'X-CSRF-TOKEN': token}}).then(function (response) {
+				this.$http.post('/account', {apiKey: $('#apikey').val()}, { headers: csrfHeader}).then(function (response) {
 
 					if (response.body) {
 						toast("API key successfully saved.", "success");
+						this.loadData();
 						this.setInterval();
 						$('#registerDoKey').modal('hide');
 					} else {
@@ -206,9 +297,41 @@
 					  toast("Invalid API key - please try again.", "danger");
 				  });
 				
+			},
+			addApp : function(event) {
+				
+				var data = {}
+				data["region"] = $("#region").val();
+				data["size"] = $("#size").val();
+				data["softwareEnum"] = $("#softwareEnum").val();
+				
+				this.$http.post('/server', data, { headers: { 'X-CSRF-TOKEN': token}}).then(function (response) {
+
+					if (response.body) {
+						toast("App created.", "success");
+						this.loadData();
+						this.hideAddAppModal();
+					} else {
+						toast("Cannot create app - please try again.", "danger");	
+					}
+				  }, function(response) {
+					  toast("Cannot create app - please try again.", "danger");
+				  });
+				
+			},
+			deleteApp : function(id) {
+				this.$http.delete('/server', { headers: csrfHeader, body: {id:  id}}).then(function (response) {
+						toast("App deleted.", "success");
+						this.loadApps();
+				  }, function(response) {
+					  this.loadApps();
+					  toast("Cannot delete app - please try again.", "danger");
+				});
 			}
+			
 		}
 	})
+	/*]]>*/
 </script>
 
 </html>
