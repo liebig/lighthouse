@@ -27,13 +27,16 @@ package de.liebig.lighthouse.accounts;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import de.liebig.lighthouse.accounts.AccountService;
@@ -47,6 +50,7 @@ import de.liebig.lighthouse.accounts.AccountService;
 public class AccountServiceTest {
 
 	@InjectMocks
+	@Spy
 	private AccountService accountService;
 
 	@Mock
@@ -85,20 +89,68 @@ public class AccountServiceTest {
 	 * Test method for
 	 * {@link de.liebig.lighthouse.accounts.AccountService#getAccount()}.
 	 */
-	@Ignore
 	@Test
 	public void testGetAccount() {
-		fail("Not yet implemented");
+		Account dummyAccount = new Account();
+		Mockito.doReturn(Arrays.asList(dummyAccount)).when(accountRepository).findAll();
+		Optional<Account> account =  accountService.getAccount();
+		
+		assertTrue(account.isPresent());
+		assertEquals(dummyAccount, account.get());
+	}
+	
+	/**
+	 * Test method for
+	 * {@link de.liebig.lighthouse.accounts.AccountService#getAccount()}
+	 * if no account is present.
+	 */
+	@Test
+	public void testGetAccountWithoutAccount() {
+		Mockito.doReturn(Arrays.asList()).when(accountRepository).findAll();
+		Optional<Account> account =  accountService.getAccount();
+		
+		assertFalse(account.isPresent());
+	}
+	
+	/**
+	 * Test method for
+	 * {@link de.liebig.lighthouse.accounts.AccountService#getAccount()}
+	 * if more than one account is present.
+	 */
+	@Test(expected = IllegalStateException.class)
+	public void testGetAccountWithMultipleAccounst() {
+		Account dummyAccount = new Account();
+		Mockito.doReturn(Arrays.asList(dummyAccount, dummyAccount)).when(accountRepository).findAll();
+		accountService.getAccount();
+		fail("Exception should have been thrown before");
 	}
 
 	/**
 	 * Test method for
 	 * {@link de.liebig.lighthouse.accounts.AccountService#createAccount(java.lang.String)}.
 	 */
-	@Ignore
 	@Test
 	public void testCreateAccount() {
-		fail("Not yet implemented");
+		Account dummyAccount = new Account();
+		Mockito.doReturn(dummyAccount).when(accountRepository).save(Mockito.any(Account.class));
+		Optional<Account> createdAccount = accountService.createAccount("ApiKey");
+		
+		assertTrue(createdAccount.isPresent());
+		assertEquals(dummyAccount, createdAccount.get());
 	}
-
+	
+	/**
+	 * Test method for
+	 * {@link de.liebig.lighthouse.accounts.AccountService#createAccount(java.lang.String)}
+	 * if a account already exists.
+	 */
+	@Test
+	public void testCreateAccountWithAccountExists() {
+		Mockito.doReturn(true).when(accountService).exists();
+		Optional<Account> createdAccount = accountService.createAccount("ApiKey");
+		
+		assertFalse(createdAccount.isPresent());
+		Mockito.verify(accountService, Mockito.times(1)).exists();
+		Mockito.verify(accountRepository, Mockito.never()).save(Mockito.any(Account.class));
+	}
 }
